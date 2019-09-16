@@ -2,13 +2,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InteractionHandler : ManagerEvents
+public class InteractionDetector : ManagerEvents
 {
     private Ray ray;
     private RaycastHit hit;
     private bool interactionNotified;
     private bool exitInteractionNotified;
-
+	
     public bool isInteracting = false;
     private PropRotationHandler rotationHandler;
     private ExitInputHandler exitInputHandler;
@@ -44,58 +44,51 @@ public class InteractionHandler : ManagerEvents
 
     private void Update()
     {
-        // Cast a ray to the center of the screen
         ray = raycastCam.ScreenPointToRay(screenCenterPoint);
-
-        //Compare tag - can be improved with a layer check
         if (Physics.Raycast(ray, out hit, 1.8f) && !hit.transform.gameObject.CompareTag("Untagged"))
         {
-            //check for the prop tag
+            //Debug.Log(hit.collider);
             if (hit.transform.gameObject.CompareTag("InteractableProp"))
             {
-                //dont do anything if its been found - disable collider 
                 if (CheckForHasBeenFound(hit.transform.GetComponent<PropComponent>().prop.clue))
                     return;
-                //avoid multiple getcomp
                 Transform iconTransform = hit.transform.GetComponent<PropComponent>().iconSpawnPosition;
-                // delegate the responsibility of checking what it is to a subscript
                 if (hit.transform.GetComponent<PropComponent>().prop.type == Props.TypeOfProp.Door || hit.transform.GetComponent<PropComponent>().prop.type == Props.TypeOfProp.Kinetoscope)
                 {
-                    //Create a singleton ui manager to handle this
-                    //the sprites should be the responsibility of UI, not the detector
-                    InitiateCursor(iconTransform, cursorUse);
+                    InitiateCursor(iconTransform,cursorUse);
                 }
                 else
                 {
-                    InitiateCursor(iconTransform, cursorLook);
+                    InitiateCursor(iconTransform,cursorLook);
                 }
-
-
+                
+               
             }
-            //They should basically have the same class and have a enum type 
+
             if (hit.transform.gameObject.CompareTag("InteractableNPC"))
             {
                 Transform iconTransform = hit.transform.GetComponent<NPCComponent>().iconSpawnPosition;
-                InitiateCursor(iconTransform, cursorTalk);
+                InitiateCursor(iconTransform,cursorTalk); 
             }
 
             if (hit.transform.gameObject.CompareTag("Elevator"))
             {
                 Transform iconTransform = hit.transform.GetComponent<IconPosition>().iconSpawnPosition;
-                InitiateCursor(iconTransform, cursorUse);
+                InitiateCursor(iconTransform,cursorUse);
             }
             if (hit.transform.gameObject.CompareTag("ElevatorButton"))
             {
                 Transform iconTransform = hit.transform.GetComponent<ElevatorButton>().iconSpawnPosition;
-                InitiateCursor(iconTransform, cursorUse);
+                InitiateCursor(iconTransform,cursorUse);
             }
-            //Dealing with input here, should be done in separate method. We should also know what were dealing with already
+            
             if (Input.GetKeyDown(KeyCode.Mouse0) && !GameManager.isBusy)
             {
+                Debug.Log("test");
                 if (hit.transform.gameObject.CompareTag("InteractableNPC"))
                 {
                     currentNpc = hit.collider.GetComponent<NPCComponent>().npcAsset;
-                    OnTriedForDialogue(currentNpc, hit.collider.gameObject);
+                    OnTriedForDialogue(currentNpc,hit.collider.gameObject);
                 }
 
                 if (hit.transform.gameObject.CompareTag("InteractableProp"))
@@ -107,15 +100,15 @@ public class InteractionHandler : ManagerEvents
 
                 if (hit.transform.gameObject.CompareTag("Elevator"))
                 {
-                    OnCalledElevator();
+                    OnCalledElevator(); 
                 }
-
+                
                 if (hit.transform.gameObject.CompareTag("ElevatorButton"))
                 {
-                    OnChangedFloor(hit.transform.gameObject.GetComponent<ElevatorButton>());
+                    OnChangedFloor(hit.transform.gameObject.GetComponent<ElevatorButton>()); 
                     Debug.Log("test");
                 }
-
+                
                 isInteracting = true;
             }
         }
@@ -140,7 +133,7 @@ public class InteractionHandler : ManagerEvents
 
         return false;
     }
-
+    
     private void InitiateCursor(Transform cursorPosition, Sprite cursorSprite)
     {
         interactionIcon.transform.position = raycastCam.WorldToScreenPoint(cursorPosition.position);
@@ -151,14 +144,14 @@ public class InteractionHandler : ManagerEvents
             DisplayIcon(cursorSprite);
         }
     }
-
+    
     public void TriggerPropEvent(Props.TypeOfProp propType)
     {
         switch (propType)
         {
             case Props.TypeOfProp.Inspect:
                 OnTriggeredInteraction();
-                if (currentTarget.clue == null || currentTarget.clue.detectiveRemarkAudio == null)
+                if (currentTarget.clue==null || currentTarget.clue.detectiveRemarkAudio==null)
                 {
                     SetExitInputHandler(true);
                 }
@@ -174,7 +167,7 @@ public class InteractionHandler : ManagerEvents
                 break;
             case Props.TypeOfProp.Read:
                 OnTriggeredInteraction();
-                if (currentTarget.clue == null || currentTarget.clue.detectiveRemarkAudio == null)
+                if (currentTarget.clue==null || currentTarget.clue.detectiveRemarkAudio==null)
                 {
                     SetExitInputHandler(true);
                 }
@@ -190,7 +183,7 @@ public class InteractionHandler : ManagerEvents
                 StartCoroutine(FadingProp());
                 break;
             case Props.TypeOfProp.Look:
-                if (currentTarget.clue == null || currentTarget.clue.detectiveRemarkAudio == null)
+                if (currentTarget.clue==null || currentTarget.clue.detectiveRemarkAudio==null)
                 {
                     SetExitInputHandler(true);
                 }
@@ -199,18 +192,18 @@ public class InteractionHandler : ManagerEvents
                     exitInputHandler.enabled = false;
                 }
                 KillIcon();
-                OnStartedPropInteraction(currentTargetGo, currentTarget);
+                OnStartedPropInteraction(currentTargetGo,currentTarget);
                 break;
             case Props.TypeOfProp.Sound:
             case Props.TypeOfProp.Reaction:
             case Props.TypeOfProp.Door:
-
-                OnStartedPropInteraction(currentTargetGo, currentTarget);
+                        
+                OnStartedPropInteraction(currentTargetGo,currentTarget);
                 break;
-
+                            
             case Props.TypeOfProp.Elevator:
                 SetExitInputHandler(true);
-                OnStartedPropInteraction(currentTargetGo, currentTarget);
+                OnStartedPropInteraction(currentTargetGo,currentTarget);
                 break;
         }
     }
@@ -219,11 +212,10 @@ public class InteractionHandler : ManagerEvents
     {
         fading.StartFadeOut();
         yield return new WaitForSeconds(0.5f);
-        OnStartedPropInteraction(currentTargetGo, currentTarget);
-
+        OnStartedPropInteraction(currentTargetGo,currentTarget);
+		
     }
 
-    //move to a ui script
     private void DisplayIcon(Sprite iconSprite)
     {
         Color temp = interactionIcon.color;
@@ -232,7 +224,6 @@ public class InteractionHandler : ManagerEvents
         interactionIcon.sprite = iconSprite;
     }
 
-    //move to a ui script
     private void KillIcon()
     {
         Color temp = interactionIcon.color;
@@ -241,7 +232,6 @@ public class InteractionHandler : ManagerEvents
         interactionIcon.sprite = null;
     }
 
-    //exit input handler should be registered himself whatever it is
     private void SetExitInputHandler(bool isProp)
     {
         exitInputHandler.currentTarget = null;
@@ -250,14 +240,14 @@ public class InteractionHandler : ManagerEvents
         if (isProp)
         {
             exitInputHandler.currentTarget = currentTarget;
-            exitInputHandler.currentTargetGo = currentTargetGo;
+            exitInputHandler.currentTargetGo = currentTargetGo;   
         }
         else
         {
             exitInputHandler.currentNpc = currentNpc;
         }
 
-        exitInputHandler.enabled = true;
+        exitInputHandler.enabled = true;    
     }
 
     private void SetRotationHandler()
@@ -265,8 +255,7 @@ public class InteractionHandler : ManagerEvents
         rotationHandler.currentTargetGo = currentTargetGo;
         rotationHandler.enabled = true;
     }
-
-    //unnecessary
+    
     public void SetRayCastingCamera(Camera newCamera)
     {
         raycastCam = newCamera;
@@ -276,7 +265,7 @@ public class InteractionHandler : ManagerEvents
     {
         rotationHandler.enabled = false;
     }
-
+    
     private void OnDetectiveRemarkEnd(Clue clue)
     {
         SetExitInputHandler(true);
@@ -286,12 +275,12 @@ public class InteractionHandler : ManagerEvents
     public static event TriggeredInteractionEventHandler TriggeredInteraction;
     protected virtual void OnTriggeredInteraction()
     {
-        if (TriggeredInteraction != null)
+        if (TriggeredInteraction!=null)
         {
             TriggeredInteraction();
         }
     }
-
-
+    
+    
 
 }
