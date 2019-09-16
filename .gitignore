@@ -1,0 +1,21 @@
+.vs/
+Assembly-CSharp-Editor-firstpass.csproj
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp-firstpass.csproj
+Assembly-CSharp.csproj
+Dylan McClosky - McCoy.mp3
+Library/
+Logs/
+Packages/
+ProjectSettings/
+README.md
+Temp/
+buildElevator.rar
+buildElevator/
+obj/
+24-06-18.sln
+
+
+/Assets/**/**
+!Assets/**/
+!/Assets/scripts/**
