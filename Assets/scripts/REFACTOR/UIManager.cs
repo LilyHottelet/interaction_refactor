@@ -1,19 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
+    public Sprite cursorLook;
+    public Sprite cursorUse;
+    public Sprite cursorTalk;
+
+
+    private CursorUIElement currentCursor;
+    public CursorUIElement cursorPrefab;
+    public Transform cursorContainer;
 
     public void InitiateCursor(Interactable interactable)
     {
-        //interactionIcon.transform.position = raycastCam.WorldToScreenPoint(cursorPosition.position);
-        //exitInteractionNotified = false;
-        //if (!interactionNotified)
-        //{
-        //    interactionNotified = true;
-        //    UIManager.Instance.DisplayIcon(cursorSprite);
-        //}
+        if (currentCursor != null) return;
+
+        currentCursor = Instantiate(cursorPrefab, cursorContainer);
+        switch (interactable.type)
+        {
+            case InteractableType.Look:
+                currentCursor.Initialize(cursorLook);
+                break;
+            case InteractableType.Use:
+                currentCursor.Initialize(cursorUse);
+                break;
+            case InteractableType.Talk:
+                currentCursor.Initialize(cursorTalk);
+                break;
+        }
     }
 
     //Change this to instantiating an icon at the correct place
@@ -28,10 +42,11 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     //also change it to kill the prefab
     public void KillIcon()
     {
-        //Color temp = interactionIcon.color;
-        //temp.a = 0f;
-        //interactionIcon.color = temp;
-        //interactionIcon.sprite = null;
+        foreach (Transform child in cursorContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        currentCursor = null;
     }
 }
 
