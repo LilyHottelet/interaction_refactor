@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,21 +14,13 @@ public class InteractionHandler : ManagerEvents
     private bool interactionNotified;
     private bool exitInteractionNotified;
 
-    public bool isInteracting = false;
+    private bool isInteracting = false;
     private PropRotationHandler rotationHandler;
     private ExitInputHandler exitInputHandler;
     private Fading fading;
     private Vector2 screenCenterPoint = new Vector2(Screen.width / 2, Screen.height / 2);
 
-    public Image interactionIcon;
     public Camera mainCam;
-    public Props currentTarget;
-    public GameObject currentTargetGo;
-    private NPCs currentNpc;
-
-    public Sprite cursorLook;
-    public Sprite cursorTalk;
-    public Sprite cursorUse;
 
     private void Start()
     {
@@ -49,16 +42,12 @@ public class InteractionHandler : ManagerEvents
         {
             currentInteractable = hit.collider.GetComponent<Interactable>();
             UIManager.Instance.InitiateCursor(currentInteractable);
+            UnityEngine.Debug.Log("hit");
             ManageInput();
         }
         else
         {
-            interactionNotified = false;
-            if (!exitInteractionNotified)
-            {
-                exitInteractionNotified = true;
-                UIManager.Instance.KillIcon();
-            }
+            UIManager.Instance.KillIcon();
         }
     }
 
@@ -81,23 +70,11 @@ public class InteractionHandler : ManagerEvents
     }
 
 
-    //The object itself should disable its collider when found
-    //private bool CheckForHasBeenFound(Clue clue)
+    //private void SetRotationHandler()
     //{
-    //    if (clue != null && clue.hasBeenFound)
-    //    {
-    //        Debug.Log("has been found");
-    //        return true;
-    //    }
-
-    //    return false;
+    //    rotationHandler.currentTargetGo = currentTargetGo;
+    //    rotationHandler.enabled = true;
     //}
-
-    private void SetRotationHandler()
-    {
-        rotationHandler.currentTargetGo = currentTargetGo;
-        rotationHandler.enabled = true;
-    }
 
     private void OnFinishedPropInteracting(GameObject go, Props prop)
     {
@@ -114,6 +91,12 @@ public class InteractionHandler : ManagerEvents
         }
     }
 
+    [Conditional("UNITY_EDITOR")]
 
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawRay(ray);
+    }
 
 }

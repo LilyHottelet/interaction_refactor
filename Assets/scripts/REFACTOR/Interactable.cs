@@ -4,19 +4,18 @@ using UnityEngine;
 
 public enum InteractableType
 {
-    Prop,
-    NPC,
-    Door
+    Look,
+    Use,
+    Talk
 }
 
-public class Interactable : MonoBehaviour
+
+public abstract class Interactable : MonoBehaviour
 {
     public InteractableType type;
 
-    public void PlayInteraction()
-    {
-        throw new NotImplementedException();
-    }
+    public abstract void PlayInteraction();
+    
 
     public delegate void EndedInteractionEventHandler();
     public static event EndedInteractionEventHandler EndedInteraction;
