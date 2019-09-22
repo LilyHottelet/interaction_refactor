@@ -9,16 +9,16 @@ public class GameManager : ManagerEvents
     public JournalScreen journalScreen;
     public GamePausing gamePausing;
     public PlayerController playerController;
-    
+
     public static string currentScene;
     public string startingScene;
 
     public Phase[] noPlayerPhases;
-    
+
     private InstructionPanelScreen instructionPanelScreen;
-    public static bool isBusy = false;
+    public static bool canInteract = false;
     public bool isInteracting = false;
-    private PlayerData currentPlayerContext; 
+    private PlayerData currentPlayerContext;
 
     private void Awake()
     {
@@ -49,9 +49,9 @@ public class GameManager : ManagerEvents
     private void StartGame()
     {
         gamePausing.PauseGame();
-        Invoke("TriggerPanel",0.5f);
+        Invoke("TriggerPanel", 0.5f);
     }
-    
+
     private void Update()
     {
         //OptionScreen
@@ -96,12 +96,12 @@ public class GameManager : ManagerEvents
 
     public void SaveLevelContext()
     {
-        SaveLoadManager.SavePlayerData(playerController.transform,PhaseManager.currentPhase.phaseIndex);
+        SaveLoadManager.SavePlayerData(playerController.transform, PhaseManager.currentPhase.phaseIndex);
         OnPlayerDataSaved(currentPlayerContext);
     }
-    
 
-    
+
+
     private void OnInstructionPanelEnd()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -111,23 +111,23 @@ public class GameManager : ManagerEvents
 
     private void OnDetectiveRemarkStart(Clue clue)
     {
-        isBusy = true;
+        canInteract = true;
     }
 
     private void OnDetectiveRemarkEnd(Clue clue)
     {
-        isBusy = false;
+        canInteract = false;
     }
 
-    private void OnFinishedPropInteracting(GameObject go,Props prop)
+    private void OnFinishedPropInteracting(GameObject go, Props prop)
     {
         if (!prop.isNestedAction)
         {
             isInteracting = false;
         }
     }
-    
-    private void OnStartedPropInteracting(GameObject go,Props prop)
+
+    private void OnStartedPropInteracting(GameObject go, Props prop)
     {
         isInteracting = true;
     }
@@ -150,13 +150,13 @@ public class GameManager : ManagerEvents
         }
         else
         {
-            yield return new WaitUntil(() => isBusy ==false);
+            yield return new WaitUntil(() => canInteract == false);
             playerController.enabled = true;
-        } 
+        }
     }
 
     private bool CheckForNoPlay()
-    { 
+    {
         foreach (var noPlayPhase in noPlayerPhases)
         {
             if (PhaseManager.currentPhase == noPlayPhase)
@@ -168,8 +168,8 @@ public class GameManager : ManagerEvents
         return false;
 
     }
-    
-    
+
+
 
 
 }

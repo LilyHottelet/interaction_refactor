@@ -12,12 +12,8 @@ public class InteractionHandler : MonoBehaviour
 
     private Interactable currentInteractable;
 
-    private PropRotationHandler rotationHandler;
-    private ExitInputHandler exitInputHandler;
-
     private void Start()
     {
-        
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -28,12 +24,12 @@ public class InteractionHandler : MonoBehaviour
         if (IsHittingObject())
         {
             currentInteractable = hit.collider.GetComponent<Interactable>();
-            UIManager.Instance.DisplayCursor(currentInteractable);
+            UIManager.Instance.DisplayInteractCursor(currentInteractable);
             ManageInput();
         }
         else
         {
-            UIManager.Instance.KillIcon();
+            UIManager.Instance.KillInteractCursor();
         }
     }
 
