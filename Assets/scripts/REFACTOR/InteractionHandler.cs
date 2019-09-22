@@ -21,6 +21,7 @@ public class InteractionHandler : MonoBehaviour
     private void Update()
     {
         // Cast a ray to the center of the screen
+        if (GameStateManager.Instance.currentGameState != GameState.Default) return;
         if (IsHittingObject())
         {
             currentInteractable = hit.collider.GetComponent<Interactable>();
@@ -37,7 +38,7 @@ public class InteractionHandler : MonoBehaviour
     {
         //This is fine for the prototype stage.
         //Would move to an input system like Rewired for production code.
-        if (Input.GetKeyDown(KeyCode.Mouse0) && GameManager.canInteract)
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             currentInteractable.PlayInteraction();
         }

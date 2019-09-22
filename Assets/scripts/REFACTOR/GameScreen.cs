@@ -2,6 +2,7 @@
 
 public abstract class GameScreen : MonoBehaviour
 {
+    [Header("Cursor Settings")]
     public Texture2D cursorToDisplay;
 
     protected virtual void OnEnable()
@@ -21,7 +22,7 @@ public abstract class GameScreen : MonoBehaviour
         {
             Cursor.SetCursor(cursorToDisplay, Vector2.zero, CursorMode.Auto);
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Confined;
         }
     }
 

@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public Transform cursorContainer;
 
     [Header("Game Screens")]
-    public GameObject closeInspectionScreen;
+    public CloseInspectionScreen closeInspectionScreen;
 
     private CursorUIElement currentCursor;
     
@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void DisplayInteractCursor(Interactable interactable)
     {
         if (currentCursor != null) return;
-
+        
         currentCursor = Instantiate(cursorPrefab, cursorContainer);
         switch (interactable.type)
         {
@@ -44,11 +44,14 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         currentCursor = null;
     }
 
-    public void DisplayCloseInspectionScreen()
+    public void DisplayCloseInspectionScreen(Interactable interactable)
     {
         //Switch input map
         //Pause the game
-        closeInspectionScreen.SetActive(true);
+        GameStateManager.Instance.SetGamePlaying(false);
+        KillInteractCursor();
+        closeInspectionScreen.gameObject.SetActive(true);
+        closeInspectionScreen.Initialize(interactable);
     }
 }
 

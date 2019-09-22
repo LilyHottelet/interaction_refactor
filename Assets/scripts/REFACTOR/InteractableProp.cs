@@ -6,8 +6,7 @@ public class InteractableProp : Interactable
 {
     public override void PlayInteraction()
     {
-        UIManager.Instance.DisplayCloseInspectionScreen();
+        UIManager.Instance.DisplayCloseInspectionScreen(this);
     }
-
     
 }
