@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class CameraManager : ManagerEvents
+public class CameraManagerOld : ManagerEvents
 {
 
     public Camera mainCam, propsCam;
