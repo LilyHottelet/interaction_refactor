@@ -82,7 +82,7 @@ public class InteractionDetector : ManagerEvents
                 InitiateCursor(iconTransform,cursorUse);
             }
             
-            if (Input.GetKeyDown(KeyCode.Mouse0) && !GameManager.isBusy)
+            if (Input.GetKeyDown(KeyCode.Mouse0) )
             {
                 Debug.Log("test");
                 if (hit.transform.gameObject.CompareTag("InteractableNPC"))
