@@ -13,6 +13,7 @@ public enum InteractableType
 public abstract class Interactable : MonoBehaviour
 {
     public InteractableType type;
+    public Transform cursorPosition;
 
     public abstract void PlayInteraction();
 

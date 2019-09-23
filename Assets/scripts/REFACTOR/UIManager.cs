@@ -19,18 +19,20 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void DisplayInteractCursor(Interactable interactable)
     {
         if (currentCursor != null) return;
-        
-        currentCursor = Instantiate(cursorPrefab, cursorContainer);
+
+        Vector3 cursorPosition = CameraManager.Instance.mainCamera.WorldToScreenPoint(interactable.cursorPosition.position);
+        currentCursor = Instantiate(cursorPrefab, cursorPosition,Quaternion.identity,cursorContainer);
+
         switch (interactable.type)
         {
             case InteractableType.Look:
-                currentCursor.Initialize(cursorLook);
+                currentCursor.Initialize(cursorLook, interactable.cursorPosition) ;
                 break;
             case InteractableType.Use:
-                currentCursor.Initialize(cursorUse);
+                currentCursor.Initialize(cursorUse, interactable.cursorPosition);
                 break;
             case InteractableType.Talk:
-                currentCursor.Initialize(cursorTalk);
+                currentCursor.Initialize(cursorTalk, interactable.cursorPosition);
                 break;
         }
     }
@@ -46,8 +48,6 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void DisplayCloseInspectionScreen(Interactable interactable)
     {
-        //Switch input map
-        //Pause the game
         GameStateManager.Instance.SetGamePlaying(false);
         KillInteractCursor();
         closeInspectionScreen.gameObject.SetActive(true);
